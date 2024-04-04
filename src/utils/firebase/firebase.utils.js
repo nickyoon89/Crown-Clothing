@@ -22,15 +22,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCKt9Av6yQU9AebU-F5_rWcN9eh4II69Zs",
-    authDomain: "ck-clothing-db.firebaseapp.com",
-    projectId: "ck-clothing-db",
-    storageBucket: "ck-clothing-db.appspot.com",
-    messagingSenderId: "486260707818",
-    appId: "1:486260707818:web:e0a61eb8988c3f9aa16293",
-    measurementId: "G-XX8GBT8WR6"
-  };
+const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
   
   // Initialize Firebase
   const firebaseApp = initializeApp(firebaseConfig);
@@ -56,7 +48,7 @@ const firebaseConfig = {
       batch.set(docRef, object);
     });
 
-    await batch.commit();
+    await batch.commit(); 
   };
 
   export const getCategoriesAndDocuments = async () => {
@@ -64,12 +56,13 @@ const firebaseConfig = {
     const q = query(collectionRef);
 
     const querySnapshot = await getDocs(q);
-    const categoryMap = querySnapshot.docs.reduce((acc, docsSnapshot) => {
+    return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+    /*const categoryMap = querySnapshot.docs.reduce((acc, docsSnapshot) => {
       const {title, items} = docsSnapshot.data();
       acc[title.toLowerCase()] = items;
       return acc;
     },{});
-    return categoryMap;
+    return categoryMap;*/
   }
 
   export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) =>{

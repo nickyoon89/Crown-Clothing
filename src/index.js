@@ -1,27 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 import App from './App';
-import { UserProvider } from './contexts/user.context';
-import { CartProvider } from './contexts/cart.context';
 
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
-import { CategoriesProvider } from './contexts/categories.context';
+import { store } from './store/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <UserProvider>
-        <CategoriesProvider>{/* products need user info, to filter down, maybe */}
-          <CartProvider>{/* need user data to check the cart, also product details */}
-            <App />
-          </CartProvider>
-        </CategoriesProvider>
-      </UserProvider>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+          {/* products need user info, to filter down, maybe */}
+          <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 
