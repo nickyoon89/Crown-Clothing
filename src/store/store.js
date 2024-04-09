@@ -1,24 +1,31 @@
 import { compose, createStore, applyMiddleware } from "redux";
 // import logger from "redux-logger"; //it is replaced with loggerMiddleWare that I made
+import { loggerMiddleWare } from "./middleware/logger";
+import {persistStore, persistReducer} from 'redux-persist';
+import storage from "redux-persist/lib/storage";
+import { thunk } from "redux-thunk";
 
 import { rootReducer } from "./root-reducer";
 
-const loggerMiddleWare = (store) => (next) => (action) => {
-    if(!action.type) {
-        return next(action);
-    }
-
-    console.log('type: ', action.type);
-    console.log('payload: ', action.payload);
-    console.log('currentState: ', store.getState());
-
-    next(action);
-
-    console.log('next state: ', store.getState());
+const persistConfig = {
+    key: 'root', //persist whole thing
+    storage, //same as storage: storage since the name and value are the same,
+    whitelist: ['cart'],
+    //blacklist: ['user'] //I don't want to save the user info
 }
 
-const middlewares = [loggerMiddleWare];
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const composedEnhancers = compose(applyMiddleware(...middlewares));
+const middlewares = [process.env.NODE_ENV !== 'production' && loggerMiddleWare, thunk]
+                    .filter(Boolean); //filter out if it's boolean (when it's not development environment)
 
-export const store = createStore(rootReducer, undefined, composedEnhancers);
+const composeEnhancer = (process.env.NODE_ENV !== 'production' && 
+                        window && 
+                        window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) //setting for redux devtools chrome extension
+                        || compose;
+
+const composedEnhancers = composeEnhancer(applyMiddleware(...middlewares));
+
+export const store = createStore(persistedReducer, undefined, composedEnhancers);
+
+export const persistor = persistStore(store);

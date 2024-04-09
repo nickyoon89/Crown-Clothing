@@ -54,7 +54,7 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
   export const getCategoriesAndDocuments = async () => {
     const collectionRef = collection(db, 'categories');
     const q = query(collectionRef);
-
+    
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
     /*const categoryMap = querySnapshot.docs.reduce((acc, docsSnapshot) => {
