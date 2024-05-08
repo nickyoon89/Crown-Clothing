@@ -3,7 +3,10 @@ import { compose, createStore, applyMiddleware } from "redux";
 import { loggerMiddleWare } from "./middleware/logger";
 import {persistStore, persistReducer} from 'redux-persist';
 import storage from "redux-persist/lib/storage";
-import { thunk } from "redux-thunk";
+// import { thunk } from "redux-thunk"; //cannot be with redux-saga
+import createSagaMiddleware from 'redux-saga';
+
+import { rootSaga } from "./root-saga";
 
 import { rootReducer } from "./root-reducer";
 
@@ -14,9 +17,11 @@ const persistConfig = {
     //blacklist: ['user'] //I don't want to save the user info
 }
 
+const sagaMiddleware = createSagaMiddleware();
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const middlewares = [process.env.NODE_ENV !== 'production' && loggerMiddleWare, thunk]
+const middlewares = [process.env.NODE_ENV !== 'production' && loggerMiddleWare, sagaMiddleware/*thunk*/]
                     .filter(Boolean); //filter out if it's boolean (when it's not development environment)
 
 const composeEnhancer = (process.env.NODE_ENV !== 'production' && 
@@ -27,5 +32,7 @@ const composeEnhancer = (process.env.NODE_ENV !== 'production' &&
 const composedEnhancers = composeEnhancer(applyMiddleware(...middlewares));
 
 export const store = createStore(persistedReducer, undefined, composedEnhancers);
+
+sagaMiddleware.run(rootSaga);
 
 export const persistor = persistStore(store);

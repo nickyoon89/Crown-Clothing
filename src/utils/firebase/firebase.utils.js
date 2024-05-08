@@ -86,7 +86,7 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
         }
     }
 
-    return userDocRef;
+    return userSnapshot;
   }
 
   export const createAuthUserWithEmailAndPassword = async (email, password) => {
@@ -105,3 +105,16 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
     onAuthStateChanged(auth, callback);
     //listener, with auth, next, error and completed, but using only next(callback)
   };
+
+  export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = onAuthStateChanged(
+        auth, 
+        (userAuth) => {
+          unsubscribe();
+          resolve(userAuth);
+        },
+        reject
+      )
+    })
+  }
