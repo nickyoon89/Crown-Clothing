@@ -20,6 +20,7 @@ export const fetchCategoriesAsync = () => async (dispatch) => {
 export function* fetchCategoriesAsync() {
     try {
         const categoriesArray =  yield call(getCategoriesAndDocuments,'categories');
+        console.log(categoriesArray);
         yield put(fetchCategoriesSuccess(categoriesArray));
     } catch(error) {
         yield put(fetchCategoriesFailed(error));

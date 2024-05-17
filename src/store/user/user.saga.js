@@ -2,7 +2,7 @@ import { takeLatest, put, all, call } from "redux-saga/effects";
 
 import { USER_ACTION_TYPES } from "./user.types";
 
-import { signInSuccess, signInFailed, signUpSuccess, signUpFailed, signOutSuccess, signOutFailed } from "./user.action";
+import { signInSuccess, signInFailed, signUpSuccess, signUpFailed, signOutSuccess, signOutFailed } from "./user.reducer";
 
 import { getCurrentUser, createUserDocumentFromAuth, signInWithGooglePopup, signInAuthUserWithEmailAndPassword, createAuthUserWithEmailAndPassword, signOutUser } from "../../utils/firebase/firebase.utils";
 
