@@ -1,4 +1,5 @@
 //Why 3rd party library should be in one file is when they change their library, it is easy to change all at once here
+import { NextOrObserver, User } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {
@@ -21,8 +22,9 @@ import {
   query,
   getDocs,
 } from "firebase/firestore";
+import { Category } from "../../store/categories/category.types";
 
-const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
+const firebaseConfig = JSON.parse(String(process.env.REACT_APP_FIRE_BASE_CONFIG));
   
   // Initialize Firebase
   const firebaseApp = initializeApp(firebaseConfig);
@@ -39,7 +41,7 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
 
   export const db = getFirestore();
 
-  export const addCollectionAndDocuments = async (collectionKey, objectsToAdd, field = "title") => {
+  /*export const addCollectionAndDocuments = async (collectionKey:string, objectsToAdd, field = "title") => {
     const collectionRef = collection(db, collectionKey);
     const batch = writeBatch(db);
 
@@ -49,7 +51,7 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
     });
 
     await batch.commit(); 
-  };
+  };*/
 
   export const getCategoriesAndDocuments = async () => {
     const collectionRef = collection(db, 'categories');
@@ -65,7 +67,12 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
     return categoryMap;*/
   }
 
-  export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) =>{
+  type Auth = {
+    uid: string;
+    displayName: string;
+    email: string
+  }
+  export const createUserDocumentFromAuth = async (userAuth:Auth, additionalInformation = {}) =>{
     if(!userAuth) return;
     const userDocRef = doc(db, 'users', userAuth.uid);
 
@@ -82,26 +89,27 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRE_BASE_CONFIG);
                 ...additionalInformation
             });
         } catch(err){
-            console.log("error creating the user", err.message);
+            if(err instanceof Error) console.log("error creating the user", err.message);
         }
     }
 
     return userSnapshot;
   }
 
-  export const createAuthUserWithEmailAndPassword = async (email, password) => {
+  export const createAuthUserWithEmailAndPassword = async (email: string, password: string) => {
     if(!email || !password) return;
     return await createUserWithEmailAndPassword(auth, email, password);
   }
 
-  export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+  export const signInAuthUserWithEmailAndPassword = async (email:string, password:string) => {
     if(!email || !password) return;
     return await signInWithEmailAndPassword(auth, email, password);
   }
 
   export const signOutUser = async () => await signOut(auth);
 
-  export const onAuthStateChangedListener = (callback) => {
+  //type NextOrObserver<T> = NextFn<T | null> | Observer<T | null>;
+  export const onAuthStateChangedListener = (callback: NextOrObserver<User>) => {
     onAuthStateChanged(auth, callback);
     //listener, with auth, next, error and completed, but using only next(callback)
   };

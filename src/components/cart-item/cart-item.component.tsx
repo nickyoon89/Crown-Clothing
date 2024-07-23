@@ -1,6 +1,15 @@
 import './cart-item.styles.scss';
 
-const CartItem = ({cartItem}) => {
+interface ICartItem {
+    cartItem:{
+        name: string;
+        imageUrl: string;
+        price?: number;
+        quantity: number;
+    }
+}
+
+const CartItem= ({cartItem}:ICartItem) => {
     const {name, imageUrl, price, quantity} = cartItem;
     return (
         <div className='cart-item-container'>

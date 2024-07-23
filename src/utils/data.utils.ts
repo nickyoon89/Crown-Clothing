@@ -3,6 +3,14 @@ export const getData = async <T>(url: string): Promise<T> => {
     return await response.json();
 }
 
+export const getEnv = (name: string): string => {
+
+    if (typeof process.env[name] === 'string') {
+        return String(process.env[name])
+    }else{
+        return ""
+    }    
+}
 /*e.g.
 type Monster = {
     id: string;
@@ -10,6 +18,6 @@ type Monster = {
     email: string;
 }
 const fetchUser = async() =>{
-    const users = await getData()
+    const users = await getData<Monster[]>(URL)
 }
 */

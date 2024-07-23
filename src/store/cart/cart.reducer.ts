@@ -1,15 +1,20 @@
+//import { AnyAction } from "redux-saga";
+//import { SetCartItems, SetIsCartOpen } from "./cart.action";
 import { createSlice } from "@reduxjs/toolkit";
-import { CART_ACTION_TYPES } from "./cart.types";
+import { CART_ACTION_TYPES, CartItem } from "./cart.types";
 
-export const CART_INITIAL_STATE = {
+export type CartState = {
+    isCartOpen: boolean;
+    cartItems: CartItem[]
+}
+
+export const CART_INITIAL_STATE:CartState= {
     isCartOpen: false,
-    cartItems: [],
-    cartCount: 0,
-    cartTotal: 0
+    cartItems: []
 }
 
 
-const addCartItem = (cartItems, productToAdd) => {
+const addCartItem = (cartItems:CartItem[], productToAdd:CartItem) => {
     //find if cartItems contains productToAdd
     const existingCartItem = cartItems.find(
         (cartItem) => cartItem.id === productToAdd.id
@@ -25,7 +30,7 @@ const addCartItem = (cartItems, productToAdd) => {
     } 
 }
 
-const removeCartItem = (cartItems, cartItemToRemove) => {
+const removeCartItem = (cartItems:CartItem[], cartItemToRemove:CartItem) => {
     //find the cart item to remove
     const existingCartItem = cartItems.find(
         (cartItem) => cartItem.id === cartItemToRemove.id
@@ -47,7 +52,7 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
     } 
 }
 
-const clearCartItem = (cartItems, cartItemToClear) => cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
+const clearCartItem = (cartItems:CartItem[], cartItemToClear:CartItem) => cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
 
 
 export const cartSlice = createSlice({
@@ -72,7 +77,7 @@ export const cartSlice = createSlice({
 export const {addItemToCart, removeItemFromCart, clearItemFromCart, setIsCartOpen} = cartSlice.actions;
 export const cartReducer = cartSlice.reducer; 
 
-// export const cartReducer = (state = CART_INITIAL_STATE, action = {}) =>{
+// export const cartReducer = (state = CART_INITIAL_STATE, action = AnyAction):CartState =>{
 //     const {type, payload} = action;
 //     switch(type){
 //         case CART_ACTION_TYPES.SET_CART_ITEMS:
